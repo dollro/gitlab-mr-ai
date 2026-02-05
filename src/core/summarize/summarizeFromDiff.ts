@@ -1,6 +1,5 @@
-import fs from "fs/promises";
 import path from "path";
-import { generateSummaryFromChanges } from "../../infrastructure/gemini.client";
+import { getAIProvider } from "../../infrastructure/providers";
 
 export async function summarizeFromDiff(
   diffJson: any[],
@@ -11,7 +10,8 @@ export async function summarizeFromDiff(
     ? path.resolve(promptInput)
     : path.resolve(__dirname, "../../prompts", promptInput);
 
-  const summary = await generateSummaryFromChanges(promptPath, diffJson);
+  const provider = getAIProvider();
+  const summary = await provider.generateSummary(promptPath, diffJson);
 
   return {
     description: summary.description,
